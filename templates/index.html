@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dosya Yükleme ve Giriş Sistemi</title>
+   <!--<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">-->
+</head>
+<body>
+    {% if 'username' in session %}
+        <!-- Kullanıcı oturum açmışsa dosya yükleme bölümü -->
+        <h2>Dosya Yükleme Sayfası</h2>
+        
+        <!-- Dosya yükleme formu -->
+        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+            <label for="file">Dosya Seç:</label>
+            <input type="file" id="file" name="file" required><br><br>
+            <input type="submit" value="Dosyayı Yükle">
+        </form>
+
+        <!-- Yüklenen dosyaları listeleme ...Eski düzgün kısım...
+        <h3>Yüklenen Dosyalar:</h3>
+        <ul>
+            {% for file in files %}
+                <li>{{ file }} - <a href="{{ url_for('download_file', filename=file) }}">İndir</a></li>
+            {% endfor %}
+        </ul> -->
+        <!-- Yüklenen dosyaları listeleme -->
+        <h3>Yüklenen Dosyalar:</h3>
+        <ul class="file-list">
+            {% if files %}
+                {% for file in uploads %}
+                    <li>
+                        {{ file }} - <a href="{{ url_for('download_file', filename=file) }}" target="_blank">İndir</a>
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>Henüz dosya yüklenmemiş.</li>
+            {% endif %}
+        </ul>
+        
+        <!-- Oturumdan çıkış -->
+        <form action="{{ url_for('logout') }}" method="get">
+            <input type="submit" value="Çıkış Yap">
+        </form>
+        {% else %}
+        <!-- Kullanıcı oturum açmamışsa giriş formu -->
+        <h2>Giriş Yap</h2>
+        <form method="post" action="{{ url_for('login') }}">
+            <label for="username">Kullanıcı Adı:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            
+            <label for="password">Şifre:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            
+            <input type="submit" value="Giriş Yap">
+        </form>
+        
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    {% endif %} 
+    
+</body>
+</html>
